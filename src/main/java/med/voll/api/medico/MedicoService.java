@@ -5,6 +5,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import jakarta.validation.Valid;
+
 @Service
 public class MedicoService {
 	
@@ -16,7 +18,19 @@ public class MedicoService {
 	}
 
 	public Page<DadosListagemMedico> listar(Pageable paginacao) {
-		return medicoRepository.findAll(paginacao).map(DadosListagemMedico::new);
+		return medicoRepository.findAllByAtivoTrue(paginacao).map(DadosListagemMedico::new);
+	}
+
+	public Medico atualizar(DadosAtualizacaoMedico dados) {
+		
+		var medico = medicoRepository.findById(dados.id()).orElseThrow();
+		medico.atualizarInformacoes(dados);
+		return medico;
+	}
+
+	public void excluir(Long id) {	
+		var medico = medicoRepository.findById(id).orElseThrow();
+		medico.inativar();
 	}
 
 }
