@@ -33,4 +33,8 @@ public class PacienteService {
 		paciente.inativar();
 	}
 
+	public Paciente detalhar(Long id) {
+		return pacienteRepo.findById(id).orElseThrow();
+	}
+
 }

@@ -13,12 +13,14 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import med.voll.api.medico.DadosAtualizacaoMedico;
 import med.voll.api.paciente.DadosAtualizacaoPaciente;
 import med.voll.api.paciente.DadosCadastroPaciente;
+import med.voll.api.paciente.DadosDetalhamentoPaciente;
 import med.voll.api.paciente.DadosListagemPaciente;
 import med.voll.api.paciente.Paciente;
 import med.voll.api.paciente.PacienteService;
@@ -32,10 +34,12 @@ public class PacienteController {
 
     @PostMapping
     @Transactional
-    public ResponseEntity<?> cadastrar(@RequestBody @Valid DadosCadastroPaciente dados) {
-    	Paciente paciente = pacienteService.salvar(dados);
+    public ResponseEntity<?> cadastrar(@RequestBody @Valid DadosCadastroPaciente dados, UriComponentsBuilder uriBuilder) {
     	
-    	return ResponseEntity.created(null).body(paciente);
+    	var paciente = pacienteService.salvar(dados);
+    	var uri = uriBuilder.path("/pacientes/{id}").buildAndExpand(paciente.getId()).toUri();
+    	
+    	return ResponseEntity.created(uri).body(new DadosDetalhamentoPaciente(paciente));
     }
     
     @GetMapping
@@ -49,9 +53,9 @@ public class PacienteController {
 	@Transactional
 	public ResponseEntity<?> atualizar(@RequestBody @Valid DadosAtualizacaoPaciente dados) {
 		
-		Paciente paciente = pacienteService.atualizar(dados);
+		var paciente = pacienteService.atualizar(dados);
 
-		return ResponseEntity.created(null).body(paciente);
+		return ResponseEntity.ok(new DadosDetalhamentoPaciente(paciente));
 	}
 	
 	@DeleteMapping("/{id}")
@@ -61,5 +65,13 @@ public class PacienteController {
 		pacienteService.excluir(id);
 		
 		return ResponseEntity.noContent().build();
+	}
+	
+	@GetMapping("/{id}")
+	public ResponseEntity<?> detalhar(@PathVariable Long id){
+		
+		var paciente = pacienteService.detalhar(id);
+		
+		return ResponseEntity.ok(new DadosDetalhamentoPaciente(paciente));
 	}
 }
