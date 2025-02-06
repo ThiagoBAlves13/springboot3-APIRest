@@ -33,4 +33,8 @@ public class MedicoService {
 		medico.inativar();
 	}
 
+	public Medico detalhar(Long id) {
+		return medicoRepository.findById(id).orElseThrow();
+	}
+
 }
