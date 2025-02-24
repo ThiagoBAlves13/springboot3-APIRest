@@ -1,4 +1,4 @@
-package med.voll.api.domain.consulta.validacoes;
+package med.voll.api.domain.consulta.validacoes.agendamento;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -20,8 +20,7 @@ public class ValidadorPacienteSemOutraConsulta implements ValidadorAgendamentoDe
 		
 		var pacientePossuiOutraConsulta = repository.existsByPacienteIdAndDataBetween(dados.idPaciente(), 
 				primeiroHorario, ultimoHorario);
-		
-		if(!pacientePossuiOutraConsulta)
+		if(pacientePossuiOutraConsulta)
 			throw new ValidacaoException("Paciente já possui um consulta agendada nesse dia!");
 		
 	}

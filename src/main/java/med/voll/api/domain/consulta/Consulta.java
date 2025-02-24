@@ -24,7 +24,7 @@ import med.voll.api.domain.paciente.Paciente;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "consulta")
+@Table(name = "consultas")
 public class Consulta {
 	
 	@Id
